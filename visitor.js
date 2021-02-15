@@ -1,3 +1,5 @@
+// visitor.js
+
 class Visitor {
   visitClassDecl(clsDecl) {
     let ctx = "function ";
