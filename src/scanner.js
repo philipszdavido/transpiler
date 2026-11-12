@@ -1,10 +1,11 @@
 "use strict";
 
 const { TranspileError } = require("./errors");
+const { isLineTerminator } = require("./util");
 
 /**
- * Lexes modern JavaScript into a flat token list. Whitespace and comments are
- * not emitted as tokens; the transformer copies them verbatim from the source
+ * Scanner: lexes modern JavaScript into a flat token list. Whitespace and comments are
+ * not emitted as tokens; the visitor copies them verbatim from the source
  * gaps between tokens, which is what keeps untouched code byte-identical.
  *
  * Token: { type, value, start, end, nl }
@@ -32,15 +33,11 @@ const REGEX_AFTER_KEYWORD = new Set([
 
 const PAREN_KEYWORDS = new Set(["if", "while", "for", "with"]);
 
-const ID_PART = String.raw`(?:[$‌‍\p{ID_Continue}]|\\u[0-9a-fA-F]{4}|\\u\{[0-9a-fA-F]+\})`;
+const ID_PART = String.raw`(?:[$\u200c\u200d\p{ID_Continue}]|\\u[0-9a-fA-F]{4}|\\u\{[0-9a-fA-F]+\})`;
 const ID_START = String.raw`(?:[$_\p{ID_Start}]|\\u[0-9a-fA-F]{4}|\\u\{[0-9a-fA-F]+\})`;
 const IDENT_RE = new RegExp(`${ID_START}${ID_PART}*`, "uy");
 const NUMBER_RE =
   /(?:0[xX][\da-fA-F_]+n?|0[oO][0-7_]+n?|0[bB][01_]+n?|(?:\d[\d_]*(?:\.[\d_]*)?|\.\d[\d_]*)(?:[eE][+-]?\d[\d_]*)?n?)/y;
-
-function isLineTerminator(ch) {
-  return ch === "\n" || ch === "\r" || ch === "\u2028" || ch === "\u2029";
-}
 
 function tokenize(source, filename) {
   const tokens = [];
