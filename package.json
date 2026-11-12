@@ -1,12 +1,27 @@
 {
   "name": "transpiler",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+  "description": "Zero-dependency transpiler that lowers ES2015+ class syntax to ES5 constructor functions",
+  "main": "src/index.js",
+  "bin": {
+    "transpile": "bin/transpile.js"
   },
-  "keywords": [],
+  "files": [
+    "bin",
+    "src"
+  ],
+  "scripts": {
+    "test": "node --test"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "keywords": [
+    "transpiler",
+    "es5",
+    "class",
+    "compiler"
+  ],
   "author": "",
   "license": "ISC"
 }
